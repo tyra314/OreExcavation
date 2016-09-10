@@ -1,10 +1,10 @@
 package oreexcavation.network;
 
-import oreexcavation.BlockPos;
 import oreexcavation.client.ExcavationKeys;
 import oreexcavation.core.ExcavationSettings;
 import oreexcavation.handlers.EventHandler;
 import oreexcavation.handlers.MiningScheduler;
+import oreexcavation.utils.BlockPos;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;

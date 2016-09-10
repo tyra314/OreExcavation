@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
-import oreexcavation.BlockPos;
+import oreexcavation.utils.BlockPos;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 

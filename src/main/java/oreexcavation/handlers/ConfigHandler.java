@@ -1,10 +1,14 @@
 package oreexcavation.handlers;
 
+import java.io.File;
 import java.util.Arrays;
 import net.minecraftforge.common.config.Configuration;
 import oreexcavation.core.ExcavationSettings;
 import oreexcavation.core.OreExcavation;
+import oreexcavation.overrides.ToolOverrideHandler;
+import oreexcavation.utils.JsonIO;
 import org.apache.logging.log4j.Level;
+import com.google.gson.JsonObject;
 
 public class ConfigHandler
 {
@@ -39,6 +43,18 @@ public class ConfigHandler
 		ExcavationSettings.blockBlacklist.addAll(Arrays.asList(bbl));
 		
 		config.save();
+		
+		File fileOverrides = new File("config/oreexcavation_overrides.json");
+		
+		if(fileOverrides.exists())
+		{
+			ToolOverrideHandler.INSTANCE.loadOverrides(JsonIO.ReadFromFile(fileOverrides));
+		} else
+		{
+			JsonObject json = ToolOverrideHandler.INSTANCE.getDefaultOverrides();
+			JsonIO.WriteToFile(fileOverrides, json);
+			ToolOverrideHandler.INSTANCE.loadOverrides(json);
+		}
 		
 		OreExcavation.logger.log(Level.INFO, "Loaded configs...");
 	}

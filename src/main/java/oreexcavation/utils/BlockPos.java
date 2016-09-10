@@ -1,4 +1,4 @@
-package oreexcavation;
+package oreexcavation.utils;
 
 public class BlockPos
 {

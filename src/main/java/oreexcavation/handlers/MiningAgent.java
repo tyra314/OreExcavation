@@ -7,9 +7,11 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import oreexcavation.BlockPos;
 import oreexcavation.core.ExcavationSettings;
 import oreexcavation.core.OreExcavation;
+import oreexcavation.overrides.ToolOverride;
+import oreexcavation.overrides.ToolOverrideHandler;
+import oreexcavation.utils.BlockPos;
 import org.apache.logging.log4j.Level;
 
 public class MiningAgent
@@ -23,6 +25,8 @@ public class MiningAgent
 	
 	private Block block;
 	private int meta;
+	
+	private ToolOverride toolProps;
 	
 	private boolean subtypes = true; // Ignore metadata
 	
@@ -47,6 +51,19 @@ public class MiningAgent
 		ItemStack held = player.getHeldItem();
 		origTool = held == null? null : held.getItem();
 		
+		if(held == null)
+		{
+			toolProps = new ToolOverride("", -1);
+		} else
+		{
+			toolProps = ToolOverrideHandler.INSTANCE.getOverride(held);
+			
+			if(toolProps == null)
+			{
+				toolProps = new ToolOverride("", -1);
+			}
+		}
+		
 		for(int i = -1; i <= 1; i++)
 		{
 			for(int j = -1; j <= 1; j++)
@@ -64,14 +81,14 @@ public class MiningAgent
 	 */
 	public boolean tickMiner()
 	{
-		if(origin == null || player == null || !player.isEntityAlive() || mined.size() >= ExcavationSettings.mineLimit)
+		if(origin == null || player == null || !player.isEntityAlive() || mined.size() >= toolProps.getLimit())
 		{
 			return true;
 		}
 		
 		for(int n = 0; scheduled.size() > 0; n++)
 		{
-			if(n >= ExcavationSettings.mineSpeed || mined.size() >= ExcavationSettings.mineLimit)
+			if(n >= toolProps.getSpeed() || mined.size() >= toolProps.getLimit())
 			{
 				break;
 			}
@@ -93,7 +110,7 @@ public class MiningAgent
 			if(pos == null)
 			{
 				continue;
-			} else if(player.getDistance(pos.getX(), pos.getY(), pos.getZ()) > ExcavationSettings.mineRange)
+			} else if(player.getDistance(pos.getX(), pos.getY(), pos.getZ()) > toolProps.getRange())
 			{
 				mined.add(pos);
 				continue;
@@ -148,7 +165,7 @@ public class MiningAgent
 			}
 		}
 		
-		return scheduled.size() <= 0 || mined.size() >= ExcavationSettings.mineLimit;
+		return scheduled.size() <= 0 || mined.size() >= toolProps.getLimit();
 	}
 	
 	/**
@@ -159,7 +176,7 @@ public class MiningAgent
 		if(pos == null || mined.contains(pos) || scheduled.contains(pos))
 		{
 			return;
-		} else if(player.getDistance(pos.getX(), pos.getY(), pos.getZ()) > ExcavationSettings.mineRange)
+		} else if(player.getDistance(pos.getX(), pos.getY(), pos.getZ()) > toolProps.getRange())
 		{
 			return;
 		}
