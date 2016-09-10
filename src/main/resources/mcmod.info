@@ -1,0 +1,16 @@
+[
+{
+  "modid": "oreexcavation",
+  "name": "OreExcavation",
+  "description": "Allows players to mine whole veins of ore, cut down whole trees or any other tool based action in one go. Simple easy to understand configs are also provided for mod pack developers",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Funwayguy","Darkosto"],
+  "credits": "",
+  "logoFile": "title.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]
