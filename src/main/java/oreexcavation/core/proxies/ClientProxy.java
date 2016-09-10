@@ -3,7 +3,7 @@ package oreexcavation.core.proxies;
 import oreexcavation.client.ExcavationKeys;
 import oreexcavation.core.OreExcavation;
 import oreexcavation.network.PacketExcavation;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.Side;
 
 
 public class ClientProxy extends CommonProxy

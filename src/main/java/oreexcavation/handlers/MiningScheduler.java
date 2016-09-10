@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
-import oreexcavation.BlockPos;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.BlockPos;
 
 public class MiningScheduler
 {
@@ -29,7 +29,7 @@ public class MiningScheduler
 		agents.remove(player.getUniqueID());
 	}
 	
-	public void startMining(EntityPlayerMP player, BlockPos pos, Block block, int meta)
+	public void startMining(EntityPlayerMP player, BlockPos pos, IBlockState state)
 	{
 		MiningAgent existing = agents.get(player.getUniqueID());
 		
@@ -38,7 +38,7 @@ public class MiningScheduler
 			existing.appendBlock(pos);
 		} else
 		{
-			existing = new MiningAgent(player, pos, block, meta);
+			existing = new MiningAgent(player, pos, state);
 			agents.put(player.getUniqueID(), existing);
 		}
 	}

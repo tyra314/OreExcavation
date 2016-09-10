@@ -3,19 +3,21 @@ package oreexcavation.handlers;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
+import oreexcavation.core.ExcavationSettings;
+import oreexcavation.core.OreExcavation;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import oreexcavation.BlockPos;
-import oreexcavation.core.ExcavationSettings;
-import oreexcavation.core.OreExcavation;
-import org.apache.logging.log4j.Level;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 
 public class MiningAgent
 {
 	private ItemStack blockStack = null;
-	private Item origTool = null; // Original tool the player was holding (must be the same to continue)
+	private Item origTool = null;
 	private List<BlockPos> mined = new ArrayList<BlockPos>();
 	private List<BlockPos> scheduled = new ArrayList<BlockPos>();
 	private final EntityPlayerMP player;
@@ -26,25 +28,25 @@ public class MiningAgent
 	
 	private boolean subtypes = true; // Ignore metadata
 	
-	public MiningAgent(EntityPlayerMP player, BlockPos origin, Block block, int meta)
+	public MiningAgent(EntityPlayerMP player, BlockPos origin, IBlockState state)
 	{
 		this.player = player;
 		this.origin = origin;
 		
-		this.block = block;
-		this.meta = meta;
+		this.block = state.getBlock();
+		this.meta = block.getMetaFromState(state);
 		
 		if(m_createStack != null)
 		{
 			try
 			{
-				blockStack = (ItemStack)m_createStack.invoke(block, meta);
+				blockStack = (ItemStack)m_createStack.invoke(block, state);
 			} catch(Exception e){}
 		}
 		
 		this.subtypes = blockStack == null? true : !blockStack.getHasSubtypes();
 		
-		ItemStack held = player.getHeldItem();
+		ItemStack held = player.getHeldItem(EnumHand.MAIN_HAND);
 		origTool = held == null? null : held.getItem();
 		
 		for(int i = -1; i <= 1; i++)
@@ -53,7 +55,7 @@ public class MiningAgent
 			{
 				for(int k = -1; k <= 1; k++)
 				{
-					appendBlock(origin.offset(i, j, k));
+					appendBlock(origin.add(i, j, k));
 				}
 			}
 		}
@@ -76,7 +78,7 @@ public class MiningAgent
 				break;
 			}
 			
-			ItemStack heldStack = player.getHeldItem();
+			ItemStack heldStack = player.getHeldItem(EnumHand.MAIN_HAND);
 			Item heldItem = heldStack == null? null : heldStack.getItem();
 			
 			if(heldItem != origTool)
@@ -99,8 +101,9 @@ public class MiningAgent
 				continue;
 			}
 			
-			Block b = player.worldObj.getBlock(pos.getX(), pos.getY(), pos.getZ());
-			int m = player.worldObj.getBlockMetadata(pos.getX(), pos.getY(), pos.getZ());
+			IBlockState s = player.worldObj.getBlockState(pos);
+			Block b = s.getBlock();
+			int m = b.getMetaFromState(s);
 			
 			boolean flag = b == block && (subtypes || m == meta);
 			
@@ -110,7 +113,7 @@ public class MiningAgent
 				
 				try
 				{
-					stack = (ItemStack)m_createStack.invoke(b, m);
+					stack = (ItemStack)m_createStack.invoke(b, s);
 				} catch(Exception e){}
 				
 				if(stack != null && stack.getItem() == blockStack.getItem() && stack.getItemDamage() == blockStack.getItemDamage())
@@ -121,13 +124,13 @@ public class MiningAgent
 			
 			if(flag)
 			{
-				if(!(ExcavationSettings.ignoreTools || b.canHarvestBlock(player, m)))
+				if(!(ExcavationSettings.ignoreTools || b.canHarvestBlock(player.worldObj, pos, player)))
 				{
 					mined.add(pos);
 					continue;
-				} else if(player.theItemInWorldManager.tryHarvestBlock(pos.getX(), pos.getY(), pos.getZ()))
+				} else if(player.interactionManager.tryHarvestBlock(pos))
 				{
-					if(player.capabilities.isCreativeMode)
+					if(player.isCreative())
 					{
 						player.getFoodStats().addExhaustion(ExcavationSettings.exaustion);
 					}
@@ -138,7 +141,7 @@ public class MiningAgent
 						{
 							for(int k = -1; k <= 1; k++)
 							{
-								appendBlock(pos.offset(i, j, k));
+								appendBlock(pos.add(i, j, k));
 							}
 						}
 					}
@@ -178,13 +181,13 @@ public class MiningAgent
 	{
 		try
 		{
-			m_createStack = Block.class.getDeclaredMethod("func_149644_j", int.class);
+			m_createStack = Block.class.getDeclaredMethod("func_180643_i", IBlockState.class);
 			m_createStack.setAccessible(true);
 		} catch(Exception e1)
 		{
 			try
 			{
-				m_createStack = Block.class.getDeclaredMethod("createStackedBlock", int.class);
+				m_createStack = Block.class.getDeclaredMethod("createStackedBlock", IBlockState.class);
 				m_createStack.setAccessible(true);
 			} catch(Exception e2)
 			{

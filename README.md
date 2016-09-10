@@ -1,4 +1,4 @@
-OreExcavator
+OreExcavation
 ============
 
 A lightweight veinminer alternative

@@ -1,9 +1,9 @@
 package oreexcavation.client;
 
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import oreexcavation.core.OreExcavation;
 import org.lwjgl.input.Keyboard;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import net.minecraft.client.settings.KeyBinding;
 
 public class ExcavationKeys
 {

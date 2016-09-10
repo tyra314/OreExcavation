@@ -1,27 +1,27 @@
 package oreexcavation.core;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import oreexcavation.core.proxies.CommonProxy;
 import oreexcavation.handlers.ConfigHandler;
 import org.apache.logging.log4j.Logger;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 @Mod(modid = OreExcavation.MODID, version = OreExcavation.VERSION, name = OreExcavation.NAME, guiFactory = OreExcavation.MODID + ".handlers.ConfigGuiFactory")
 public class OreExcavation
 {
     public static final String MODID = "oreexcavation";
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "2.0.0";
     public static final String NAME = "OreExcavation";
     public static final String PROXY = MODID + ".core.proxies";
-    public static final String CHANNEL = "OR_CHAN";
+    public static final String CHANNEL = "OE_CHAN";
 	
 	@Instance(MODID)
 	public static OreExcavation instance;
