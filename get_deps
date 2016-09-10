@@ -1,0 +1,2 @@
+echo "Downloading dependencies..."
+curl -k -o make_logs https://gist.githubusercontent.com/Funwayguy/86cba2c92ff37ae89a238ce0c7d0851f/raw/ore_excavation_make_logs

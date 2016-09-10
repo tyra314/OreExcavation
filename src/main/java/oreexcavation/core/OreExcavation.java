@@ -18,10 +18,12 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 public class OreExcavation
 {
     public static final String MODID = "oreexcavation";
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "CI_MOD_VERSION";
+    public static final String BRANCH = "CI_MOD_BRANCH";
+    public static final String HASH = "CI_MOD_HASH";
     public static final String NAME = "OreExcavation";
     public static final String PROXY = MODID + ".core.proxies";
-    public static final String CHANNEL = "OR_CHAN";
+    public static final String CHANNEL = "OE_CHAN";
 	
 	@Instance(MODID)
 	public static OreExcavation instance;

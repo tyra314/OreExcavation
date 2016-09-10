@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class ExcavationSettings
 {
+	public static boolean hideUpdates = false;
 	public static int mineSpeed = 128;
 	public static int mineLimit = 64;
 	public static int mineRange = 16;

@@ -19,7 +19,8 @@ public class ConfigHandler
 		}
 		
 		config.load();
-		
+
+		ExcavationSettings.hideUpdates = config.getBoolean("Hide Updates", Configuration.CATEGORY_GENERAL, false, "Hides update notifications");
 		ExcavationSettings.mineLimit = config.getInt("Limit", Configuration.CATEGORY_GENERAL, 128, 1, Integer.MAX_VALUE, "The maximum number of blocks that can be excavated at once");
 		ExcavationSettings.mineSpeed = config.getInt("Speed", Configuration.CATEGORY_GENERAL, 64, 1, Integer.MAX_VALUE, "How many blocks per tick can be excavated");
 		ExcavationSettings.mineRange = config.getInt("Range", Configuration.CATEGORY_GENERAL, 16, 1, Integer.MAX_VALUE, "How far from the origin an excavation can travel");
