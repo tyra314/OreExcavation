@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.1.0"
+version = "CI_MOD_VERSION"
 group= "oreexcavation" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "OreExcavation"
 
