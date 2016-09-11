@@ -8,6 +8,7 @@ import oreexcavation.core.ExcavationSettings;
 import oreexcavation.core.OreExcavation;
 import oreexcavation.overrides.ToolOverride;
 import oreexcavation.overrides.ToolOverrideHandler;
+import oreexcavation.utils.XPHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -147,9 +148,10 @@ public class MiningAgent
 					continue;
 				} else if(player.interactionManager.tryHarvestBlock(pos))
 				{
-					if(player.isCreative())
+					if(!player.isCreative())
 					{
-						player.getFoodStats().addExhaustion(ExcavationSettings.exaustion);
+						player.getFoodStats().addExhaustion(toolProps.getExaustion());
+						XPHelper.addXP(player, -toolProps.getExperience());
 					}
 					
 					for(int i = -1; i <= 1; i++)
@@ -189,7 +191,7 @@ public class MiningAgent
 	
 	private boolean hasEnergy(EntityPlayerMP player)
 	{
-		return player.getFoodStats().getFoodLevel() > 0 || ExcavationSettings.exaustion <= 0;
+		return (toolProps.getExaustion() <= 0 || player.getFoodStats().getFoodLevel() > 0) && (toolProps.getExperience() <= 0 || XPHelper.getPlayerXP(player) >= toolProps.getExperience());
 	}
 	
 	private static Method m_createStack = null;

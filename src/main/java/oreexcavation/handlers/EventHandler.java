@@ -98,7 +98,7 @@ public class EventHandler
 	{
 		cTick = (cTick + 1)%10;
 		
-		if(cTick != 0 || Minecraft.getMinecraft().thePlayer == null || !isExcavating)
+		if(cTick != 0 || Minecraft.getMinecraft().thePlayer == null || !isExcavating || !ExcavationSettings.mustHold)
 		{
 			return;
 		}

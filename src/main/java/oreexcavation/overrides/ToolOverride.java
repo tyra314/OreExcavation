@@ -13,6 +13,8 @@ public class ToolOverride
 	private int speed = 64;
 	private int limit = 128;
 	private int range = 16;
+	private float exaustion = 0.1F;
+	private int experience = 0;
 	
 	public ToolOverride(String itemID, int metadata)
 	{
@@ -22,14 +24,8 @@ public class ToolOverride
 		this.speed = ExcavationSettings.mineSpeed;
 		this.limit = ExcavationSettings.mineLimit;
 		this.range = ExcavationSettings.mineRange;
-	}
-	
-	public ToolOverride setValues(int speed, int limit, int range)
-	{
-		this.speed = Math.max(1, speed);
-		this.limit = limit;
-		this.range = range;
-		return this;
+		this.exaustion = ExcavationSettings.exaustion;
+		this.experience = ExcavationSettings.experience;
 	}
 	
 	public boolean isApplicable(ItemStack stack)
@@ -53,9 +49,19 @@ public class ToolOverride
 		return true;
 	}
 	
+	public void setSpeed(int value)
+	{
+		this.speed = value;
+	}
+	
 	public int getSpeed()
 	{
 		return speed;
+	}
+	
+	public void setLimit(int value)
+	{
+		this.limit = value;
 	}
 	
 	public int getLimit()
@@ -63,8 +69,33 @@ public class ToolOverride
 		return limit;
 	}
 	
+	public void setRange(int value)
+	{
+		this.range = value;
+	}
+	
 	public int getRange()
 	{
 		return range;
+	}
+	
+	public void setExaustion(float value)
+	{
+		this.exaustion = value;
+	}
+	
+	public float getExaustion()
+	{
+		return exaustion;
+	}
+	
+	public void setExperience(int value)
+	{
+		this.experience = value;
+	}
+	
+	public int getExperience()
+	{
+		return experience;
 	}
 }
