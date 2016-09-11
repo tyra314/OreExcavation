@@ -12,6 +12,7 @@ import oreexcavation.core.OreExcavation;
 import oreexcavation.overrides.ToolOverride;
 import oreexcavation.overrides.ToolOverrideHandler;
 import oreexcavation.utils.BlockPos;
+import oreexcavation.utils.XPHelper;
 import org.apache.logging.log4j.Level;
 
 public class MiningAgent
@@ -144,9 +145,10 @@ public class MiningAgent
 					continue;
 				} else if(player.theItemInWorldManager.tryHarvestBlock(pos.getX(), pos.getY(), pos.getZ()))
 				{
-					if(player.capabilities.isCreativeMode)
+					if(!player.capabilities.isCreativeMode)
 					{
-						player.getFoodStats().addExhaustion(ExcavationSettings.exaustion);
+						player.getFoodStats().addExhaustion(toolProps.getExaustion());
+						XPHelper.addXP(player, -toolProps.getExperience());
 					}
 					
 					for(int i = -1; i <= 1; i++)
@@ -186,7 +188,7 @@ public class MiningAgent
 	
 	private boolean hasEnergy(EntityPlayerMP player)
 	{
-		return player.getFoodStats().getFoodLevel() > 0 || ExcavationSettings.exaustion <= 0;
+		return (toolProps.getExaustion() <= 0 || player.getFoodStats().getFoodLevel() > 0) && (toolProps.getExperience() <= 0 || XPHelper.getPlayerXP(player) >= toolProps.getExperience());
 	}
 	
 	private static Method m_createStack = null;

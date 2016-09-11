@@ -13,11 +13,13 @@ public class ExcavationSettings
 	public static int mineLimit = 64;
 	public static int mineRange = 16;
 	public static float exaustion = 0.1F;
+	public static int experience = 0;
 	
 	/**
 	 * -1 Disabled, 0 = Normal, 1 = Sneak, 2 = Always
 	 */
 	public static int mineMode = 1;
+	public static boolean mustHold = true;
 	
 	public static boolean openHand = false;
 	public static boolean ignoreTools = false;
