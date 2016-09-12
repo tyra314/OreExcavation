@@ -19,6 +19,7 @@ import oreexcavation.client.ExcavationKeys;
 import oreexcavation.core.ExcavationSettings;
 import oreexcavation.core.OreExcavation;
 import oreexcavation.network.PacketExcavation;
+import oreexcavation.utils.ToolEffectiveCheck;
 
 public class EventHandler
 {
@@ -58,7 +59,7 @@ public class EventHandler
 		Block b = s.getBlock();
 		int m = b.getMetaFromState(s);
 		
-		if(ExcavationSettings.ignoreTools || b.canHarvestBlock(event.getWorld(), p, player))
+		if(ExcavationSettings.ignoreTools || ToolEffectiveCheck.canHarvestBlock(event.getWorld(), s, p, player))
 		{
 			MiningAgent agent = MiningScheduler.INSTANCE.getActiveAgent(player.getUniqueID());
 			

@@ -23,6 +23,7 @@ public class ExcavationSettings
 	
 	public static boolean openHand = false;
 	public static boolean ignoreTools = false;
+	public static boolean toolClass = false;
 	
 	public static List<String> toolBlacklist = new ArrayList<String>();
 	public static List<String> blockBlacklist = new ArrayList<String>();

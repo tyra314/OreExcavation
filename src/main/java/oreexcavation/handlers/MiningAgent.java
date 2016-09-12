@@ -8,6 +8,7 @@ import oreexcavation.core.ExcavationSettings;
 import oreexcavation.core.OreExcavation;
 import oreexcavation.overrides.ToolOverride;
 import oreexcavation.overrides.ToolOverrideHandler;
+import oreexcavation.utils.ToolEffectiveCheck;
 import oreexcavation.utils.XPHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -142,7 +143,7 @@ public class MiningAgent
 			
 			if(flag)
 			{
-				if(!(ExcavationSettings.ignoreTools || b.canHarvestBlock(player.worldObj, pos, player)))
+				if(!(ExcavationSettings.ignoreTools || ToolEffectiveCheck.canHarvestBlock(player.worldObj, s, pos, player)))
 				{
 					mined.add(pos);
 					continue;
