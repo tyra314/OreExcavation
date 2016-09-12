@@ -13,6 +13,7 @@ import oreexcavation.core.ExcavationSettings;
 import oreexcavation.core.OreExcavation;
 import oreexcavation.network.PacketExcavation;
 import oreexcavation.utils.BlockPos;
+import oreexcavation.utils.ToolEffectiveCheck;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -53,7 +54,7 @@ public class EventHandler
 			return;
 		}
 		
-		if(ExcavationSettings.ignoreTools || event.block.canHarvestBlock(event.getPlayer(), event.blockMetadata))
+		if(ExcavationSettings.ignoreTools || ToolEffectiveCheck.canHarvestBlock(event.world, event.block, event.blockMetadata, new BlockPos(event.x, event.y, event.z), event.getPlayer()))
 		{
 			MiningAgent agent = MiningScheduler.INSTANCE.getActiveAgent(player.getUniqueID());
 			

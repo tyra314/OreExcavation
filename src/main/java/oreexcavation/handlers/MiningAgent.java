@@ -12,6 +12,7 @@ import oreexcavation.core.OreExcavation;
 import oreexcavation.overrides.ToolOverride;
 import oreexcavation.overrides.ToolOverrideHandler;
 import oreexcavation.utils.BlockPos;
+import oreexcavation.utils.ToolEffectiveCheck;
 import oreexcavation.utils.XPHelper;
 import org.apache.logging.log4j.Level;
 
@@ -139,7 +140,7 @@ public class MiningAgent
 			
 			if(flag)
 			{
-				if(!(ExcavationSettings.ignoreTools || b.canHarvestBlock(player, m)))
+				if(!(ExcavationSettings.ignoreTools || ToolEffectiveCheck.canHarvestBlock(player.worldObj, b, m, pos, player)))
 				{
 					mined.add(pos);
 					continue;
