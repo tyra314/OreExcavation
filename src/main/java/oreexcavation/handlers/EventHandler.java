@@ -5,6 +5,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 import oreexcavation.client.ExcavationKeys;
 import oreexcavation.core.ExcavationSettings;
 import oreexcavation.core.OreExcavation;
@@ -46,12 +48,33 @@ public class EventHandler
 		if(player.getHeldItem(EnumHand.MAIN_HAND) == null && !ExcavationSettings.openHand)
 		{
 			return;
-		} else if(player.getHeldItem(EnumHand.MAIN_HAND) != null && ExcavationSettings.toolBlacklist.contains(Item.REGISTRY.getNameForObject(player.getHeldItem(EnumHand.MAIN_HAND).getItem()).toString()))
+		} else if(player.getHeldItem(EnumHand.MAIN_HAND) != null && ExcavationSettings.toolBlacklist.contains(Item.REGISTRY.getNameForObject(player.getHeldItem(EnumHand.MAIN_HAND).getItem()).toString()) != ExcavationSettings.invertTBlacklist)
 		{
 			return;
-		} else if(ExcavationSettings.blockBlacklist.contains(Block.REGISTRY.getNameForObject(event.getState().getBlock()).toString()))
+		} else if(ExcavationSettings.blockBlacklist.contains(Block.REGISTRY.getNameForObject(event.getState().getBlock()).toString()) != ExcavationSettings.invertBBlacklist)
 		{
 			return;
+		} else
+		{
+			int[] oreIDs = OreDictionary.getOreIDs(new ItemStack(event.getState().getBlock()));
+			
+			for(int id : oreIDs)
+			{
+				if(ExcavationSettings.blockBlacklist.contains(OreDictionary.getOreName(id)) != ExcavationSettings.invertBBlacklist)
+				{
+					return;
+				}
+			}
+			
+			oreIDs = OreDictionary.getOreIDs(player.getHeldItem(EnumHand.MAIN_HAND));
+			
+			for(int id : oreIDs)
+			{
+				if(ExcavationSettings.toolBlacklist.contains(OreDictionary.getOreName(id)) != ExcavationSettings.invertTBlacklist)
+				{
+					return;
+				}
+			}
 		}
 		
 		BlockPos p = event.getPos();
