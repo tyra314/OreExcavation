@@ -4,10 +4,13 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.oredict.OreDictionary;
 import oreexcavation.client.ExcavationKeys;
 import oreexcavation.core.ExcavationSettings;
 import oreexcavation.core.OreExcavation;
@@ -46,12 +49,33 @@ public class EventHandler
 		if(player.getHeldItem() == null && !ExcavationSettings.openHand)
 		{
 			return;
-		} else if(player.getHeldItem() != null && ExcavationSettings.toolBlacklist.contains(Item.itemRegistry.getNameForObject(player.getHeldItem().getItem())))
+		} else if(player.getHeldItem() != null && ExcavationSettings.toolBlacklist.contains(Item.itemRegistry.getNameForObject(player.getHeldItem().getItem())) != ExcavationSettings.invertTBlacklist)
 		{
 			return;
-		} else if(ExcavationSettings.blockBlacklist.contains(Block.blockRegistry.getNameForObject(event.block)))
+		} else if(ExcavationSettings.blockBlacklist.contains(Block.blockRegistry.getNameForObject(event.block)) != ExcavationSettings.invertBBlacklist)
 		{
 			return;
+		} else
+		{
+			int[] oreIDs = OreDictionary.getOreIDs(new ItemStack(event.block));
+			
+			for(int id : oreIDs)
+			{
+				if(ExcavationSettings.blockBlacklist.contains(OreDictionary.getOreName(id)) != ExcavationSettings.invertBBlacklist)
+				{
+					return;
+				}
+			}
+			
+			oreIDs = OreDictionary.getOreIDs(player.getHeldItem());
+			
+			for(int id : oreIDs)
+			{
+				if(ExcavationSettings.toolBlacklist.contains(OreDictionary.getOreName(id)) != ExcavationSettings.invertTBlacklist)
+				{
+					return;
+				}
+			}
 		}
 		
 		if(ExcavationSettings.ignoreTools || ToolEffectiveCheck.canHarvestBlock(event.world, event.block, event.blockMetadata, new BlockPos(event.x, event.y, event.z), event.getPlayer()))

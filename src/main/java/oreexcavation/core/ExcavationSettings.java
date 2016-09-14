@@ -16,10 +16,12 @@ public class ExcavationSettings
 	public static int experience = 0;
 	
 	/**
-	 * -1 Disabled, 0 = Normal, 1 = Sneak, 2 = Always
+	 * -1 Disabled, 0 = Keybind, 1 = Sneak, 2 = Always
 	 */
 	public static int mineMode = 1;
 	public static boolean mustHold = true;
+	public static boolean invertTBlacklist = false;
+	public static boolean invertBBlacklist = false;
 	
 	public static boolean openHand = false;
 	public static boolean ignoreTools = false;
