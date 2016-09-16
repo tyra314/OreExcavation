@@ -36,14 +36,14 @@ public class EventHandler
 	}
 	
 	@SubscribeEvent
-	public void onBlockBreak(BlockEvent.BreakEvent event)
+	public void onBlockHarvest(BlockEvent.HarvestDropsEvent event)
 	{
-		if(event.getWorld().isRemote || !(event.getPlayer() instanceof EntityPlayerMP))
+		if(event.getWorld().isRemote || !(event.getHarvester() instanceof EntityPlayerMP))
 		{
 			return;
 		}
 		
-		EntityPlayerMP player = (EntityPlayerMP)event.getPlayer();
+		EntityPlayerMP player = (EntityPlayerMP)event.getHarvester();
 		
 		if(player.getHeldItem(EnumHand.MAIN_HAND) == null && !ExcavationSettings.openHand)
 		{
@@ -56,7 +56,7 @@ public class EventHandler
 			return;
 		} else
 		{
-			int[] oreIDs = OreDictionary.getOreIDs(new ItemStack(event.getState().getBlock()));
+			int[] oreIDs = Item.getItemFromBlock(event.getState().getBlock()) == null? new int[0] : OreDictionary.getOreIDs(new ItemStack(event.getState().getBlock()));
 			
 			for(int id : oreIDs)
 			{
@@ -66,7 +66,7 @@ public class EventHandler
 				}
 			}
 			
-			oreIDs = OreDictionary.getOreIDs(player.getHeldItem(EnumHand.MAIN_HAND));
+			oreIDs = player.getHeldItem(EnumHand.MAIN_HAND) == null? new int[0] : OreDictionary.getOreIDs(player.getHeldItem(EnumHand.MAIN_HAND));
 			
 			for(int id : oreIDs)
 			{
