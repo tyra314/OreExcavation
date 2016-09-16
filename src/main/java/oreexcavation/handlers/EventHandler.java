@@ -36,14 +36,14 @@ public class EventHandler
 	}
 	
 	@SubscribeEvent
-	public void onBlockBreak(BlockEvent.BreakEvent event)
+	public void onBlockBreak(BlockEvent.HarvestDropsEvent event)
 	{
-		if(event.world.isRemote || !(event.getPlayer() instanceof EntityPlayerMP))
+		if(event.world.isRemote || !(event.harvester instanceof EntityPlayerMP))
 		{
 			return;
 		}
 		
-		EntityPlayerMP player = (EntityPlayerMP)event.getPlayer();
+		EntityPlayerMP player = (EntityPlayerMP)event.harvester;
 		
 		if(player.getHeldItem() == null && !ExcavationSettings.openHand)
 		{
@@ -66,7 +66,7 @@ public class EventHandler
 				}
 			}
 			
-			oreIDs = OreDictionary.getOreIDs(player.getHeldItem());
+			oreIDs = player.getHeldItem() == null? new int[0] : OreDictionary.getOreIDs(player.getHeldItem());
 			
 			for(int id : oreIDs)
 			{
@@ -77,7 +77,7 @@ public class EventHandler
 			}
 		}
 		
-		if(ExcavationSettings.ignoreTools || ToolEffectiveCheck.canHarvestBlock(event.world, event.block, event.blockMetadata, new BlockPos(event.x, event.y, event.z), event.getPlayer()))
+		if(ExcavationSettings.ignoreTools || ToolEffectiveCheck.canHarvestBlock(event.world, event.block, event.blockMetadata, new BlockPos(event.x, event.y, event.z), player))
 		{
 			MiningAgent agent = MiningScheduler.INSTANCE.getActiveAgent(player.getUniqueID());
 			
