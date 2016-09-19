@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -36,14 +37,14 @@ public class EventHandler
 	}
 	
 	@SubscribeEvent
-	public void onBlockHarvest(BlockEvent.HarvestDropsEvent event)
+	public void onBlockBreak(BlockEvent.BreakEvent event)
 	{
-		if(event.getWorld().isRemote || !(event.getHarvester() instanceof EntityPlayerMP))
+		if(event.getWorld().isRemote || !(event.getPlayer() instanceof EntityPlayerMP) || event.getPlayer() instanceof FakePlayer)
 		{
 			return;
 		}
 		
-		EntityPlayerMP player = (EntityPlayerMP)event.getHarvester();
+		EntityPlayerMP player = (EntityPlayerMP)event.getPlayer();
 		
 		if(player.getHeldItem(EnumHand.MAIN_HAND) == null && !ExcavationSettings.openHand)
 		{
