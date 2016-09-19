@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -36,14 +37,14 @@ public class EventHandler
 	}
 	
 	@SubscribeEvent
-	public void onBlockBreak(BlockEvent.HarvestDropsEvent event)
+	public void onBlockBreak(BlockEvent.BreakEvent event)
 	{
-		if(event.world.isRemote || !(event.harvester instanceof EntityPlayerMP))
+		if(event.world.isRemote || !(event.getPlayer() instanceof EntityPlayerMP) || event.getPlayer() instanceof FakePlayer)
 		{
 			return;
 		}
 		
-		EntityPlayerMP player = (EntityPlayerMP)event.harvester;
+		EntityPlayerMP player = (EntityPlayerMP)event.getPlayer();
 		
 		if(player.getHeldItem() == null && !ExcavationSettings.openHand)
 		{
