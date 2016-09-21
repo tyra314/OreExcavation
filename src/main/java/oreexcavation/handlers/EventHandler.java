@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,33 +50,12 @@ public class EventHandler
 		if(player.getHeldItem(EnumHand.MAIN_HAND) == null && !ExcavationSettings.openHand)
 		{
 			return;
-		} else if(player.getHeldItem(EnumHand.MAIN_HAND) != null && ExcavationSettings.toolBlacklist.contains(Item.REGISTRY.getNameForObject(player.getHeldItem(EnumHand.MAIN_HAND).getItem()).toString()) != ExcavationSettings.invertTBlacklist)
+		} else if(isToolBlacklisted(player.getHeldItem(EnumHand.MAIN_HAND)) != ExcavationSettings.invertTBlacklist)
 		{
 			return;
-		} else if(ExcavationSettings.blockBlacklist.contains(Block.REGISTRY.getNameForObject(event.getState().getBlock()).toString()) != ExcavationSettings.invertBBlacklist)
+		} else if(isBlockBlacklisted(event.getState().getBlock()) != ExcavationSettings.invertBBlacklist)
 		{
 			return;
-		} else
-		{
-			int[] oreIDs = Item.getItemFromBlock(event.getState().getBlock()) == null? new int[0] : OreDictionary.getOreIDs(new ItemStack(event.getState().getBlock()));
-			
-			for(int id : oreIDs)
-			{
-				if(ExcavationSettings.blockBlacklist.contains(OreDictionary.getOreName(id)) != ExcavationSettings.invertBBlacklist)
-				{
-					return;
-				}
-			}
-			
-			oreIDs = player.getHeldItem(EnumHand.MAIN_HAND) == null? new int[0] : OreDictionary.getOreIDs(player.getHeldItem(EnumHand.MAIN_HAND));
-			
-			for(int id : oreIDs)
-			{
-				if(ExcavationSettings.toolBlacklist.contains(OreDictionary.getOreName(id)) != ExcavationSettings.invertTBlacklist)
-				{
-					return;
-				}
-			}
 		}
 		
 		BlockPos p = event.getPos();
@@ -162,5 +142,62 @@ public class EventHandler
 		}
 		
 		MiningScheduler.INSTANCE.resetAll();
+	}
+	
+	public boolean isBlockBlacklisted(Block block)
+	{
+		if(block == null || block == Blocks.AIR)
+		{
+			return false;
+		}
+		
+		if(ExcavationSettings.blockBlacklist.contains(Block.REGISTRY.getNameForObject(block).toString()))
+		{
+			return true;
+		}
+		
+		Item itemBlock = Item.getItemFromBlock(block);
+		
+		if(itemBlock == null)
+		{
+			return false;
+		}
+		
+		int[] oreIDs =  OreDictionary.getOreIDs(new ItemStack(block));
+		
+		for(int id : oreIDs)
+		{
+			if(ExcavationSettings.blockBlacklist.contains(OreDictionary.getOreName(id)))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean isToolBlacklisted(ItemStack stack)
+	{
+		if(stack == null || stack.getItem() == null)
+		{
+			return false;
+		}
+		
+		if(ExcavationSettings.toolBlacklist.contains(Item.REGISTRY.getNameForObject(stack.getItem()).toString()))
+		{
+			return true;
+		}
+		
+		int[] oreIDs = OreDictionary.getOreIDs(stack);
+		
+		for(int id : oreIDs)
+		{
+			if(ExcavationSettings.toolBlacklist.contains(OreDictionary.getOreName(id)) != ExcavationSettings.invertTBlacklist)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
