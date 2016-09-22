@@ -84,7 +84,7 @@ public class PacketExcavation implements IMessage
 				return null;
 			} else if(ExcavationSettings.mineMode == 0)
 			{
-				if(!ExcavationKeys.veinKey.isPressed())
+				if(!ExcavationKeys.veinKey.getIsKeyPressed())
 				{
 					return null;
 				}
