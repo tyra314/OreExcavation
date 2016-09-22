@@ -30,7 +30,7 @@ public class OreExcavation
 	
 	@SidedProxy(clientSide = PROXY + ".ClientProxy", serverSide = PROXY + ".CommonProxy")
 	public static CommonProxy proxy;
-	public SimpleNetworkWrapper network ;
+	public SimpleNetworkWrapper network;
 	public static Logger logger;
     
     @EventHandler
