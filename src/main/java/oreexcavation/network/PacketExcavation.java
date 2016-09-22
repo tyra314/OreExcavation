@@ -101,9 +101,6 @@ public class PacketExcavation implements IMessage
 				if(!ExcavationKeys.veinKey.isKeyDown())
 				{
 					return null;
-				} else
-				{
-					System.out.println("Sure it's pressed!");
 				}
 			} else if(ExcavationSettings.mineMode != 2 && !Minecraft.getMinecraft().thePlayer.isSneaking())
 			{

@@ -115,7 +115,7 @@ public class EventHandler
 			canContinue = false;
 		} else if(ExcavationSettings.mineMode == 0)
 		{
-			if(!ExcavationKeys.veinKey.isPressed())
+			if(!ExcavationKeys.veinKey.isKeyDown())
 			{
 				canContinue = false;
 			}
