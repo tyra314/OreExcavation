@@ -17,9 +17,9 @@ public class ToolEffectiveCheck
 			return false;
 		}
 		
-		if(ExcavationSettings.openHand && player.getHeldItem() == null && block.getMaterial().isToolNotRequired())
+		if(!ExcavationSettings.openHand && player.getHeldItem() == null)
 		{
-			return true;
+			return false;
 		} else if(ExcavationSettings.toolClass)
 		{
 			ItemStack held = player.getHeldItem();
@@ -43,9 +43,16 @@ public class ToolEffectiveCheck
 			}
 			
 			return false;
-		} else
+		} else if(ExcavationSettings.altTools)
 		{
-			return block.canHarvestBlock(player, metadata);
+			ItemStack held = player.getHeldItem();
+			
+			if(held != null && held.getItem().func_150893_a(held, block) > 1F)
+			{
+				return true;
+			}
 		}
+		
+		return block.canHarvestBlock(player, metadata);
 	}
 }

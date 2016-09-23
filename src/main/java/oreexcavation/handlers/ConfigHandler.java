@@ -35,6 +35,7 @@ public class ConfigHandler
 		ExcavationSettings.invertTBlacklist = config.getBoolean("Invert Tool Blacklist", Configuration.CATEGORY_GENERAL, false, "Inverts the tool blacklist to function as a whitelist");
 		ExcavationSettings.invertBBlacklist = config.getBoolean("Invert Block Blacklist", Configuration.CATEGORY_GENERAL, false, "Inverts the tool blacklist to function as a whitelist");
 		ExcavationSettings.ignoreTools = config.getBoolean("Ignore Tool", Configuration.CATEGORY_GENERAL, false, "Ignores whether or not the held tool is valid");
+		ExcavationSettings.altTools = config.getBoolean("Alt Tools", Configuration.CATEGORY_GENERAL, false, "Use alternate check for tool validity (e.g. swords on webs)");
 		ExcavationSettings.toolClass = config.getBoolean("Only Standard Types", Configuration.CATEGORY_GENERAL, false, "Limit excavation to standard tool types (Picks, Shoves, Axes & Shears)");
 		ExcavationSettings.mineMode = config.getInt("Mode", Configuration.CATEGORY_GENERAL, 1, -1, 2, "Excavation mode (-1 Disabled, 0 = Keybind, 1 = Sneak, 2 = Always)");
 		
