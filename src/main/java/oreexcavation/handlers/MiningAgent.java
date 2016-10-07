@@ -47,6 +47,11 @@ public class MiningAgent
 			try
 			{
 				blockStack = (ItemStack)m_createStack.invoke(block, state);
+				
+				if(blockStack == null || blockStack.getItem() == null)
+				{
+					blockStack = null;
+				}
 			} catch(Exception e){}
 		}
 		
