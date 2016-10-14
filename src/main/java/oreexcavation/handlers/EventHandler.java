@@ -56,6 +56,9 @@ public class EventHandler
 		} else if(isBlockBlacklisted(event.getState().getBlock()) != ExcavationSettings.invertBBlacklist)
 		{
 			return;
+		} else if(event.getWorld().isAirBlock(event.getPos()))
+		{
+			return;
 		}
 		
 		BlockPos p = event.getPos();

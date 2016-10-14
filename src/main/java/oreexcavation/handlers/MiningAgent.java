@@ -123,6 +123,10 @@ public class MiningAgent
 			{
 				mined.add(pos);
 				continue;
+			} else if(player.worldObj.isAirBlock(pos))
+			{
+				mined.add(pos);
+				continue;
 			}
 			
 			IBlockState s = player.worldObj.getBlockState(pos);
