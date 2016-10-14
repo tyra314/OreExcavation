@@ -56,6 +56,9 @@ public class EventHandler
 		} else if(isBlockBlacklisted(event.block) != ExcavationSettings.invertBBlacklist)
 		{
 			return;
+		} else if(event.world.isAirBlock(event.x, event.y, event.z))
+		{
+			return;
 		}
 		
 		if(ExcavationSettings.ignoreTools || ToolEffectiveCheck.canHarvestBlock(event.world, event.block, event.blockMetadata, new BlockPos(event.x, event.y, event.z), player))
