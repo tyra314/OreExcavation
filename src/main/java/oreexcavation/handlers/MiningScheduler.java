@@ -26,6 +26,13 @@ public class MiningScheduler
 	
 	public void stopMining(EntityPlayerMP player)
 	{
+		MiningAgent a = agents.get(player.getUniqueID());
+		
+		if(a != null)
+		{
+			a.dropEverything();
+		}
+		
 		agents.remove(player.getUniqueID());
 	}
 	
@@ -51,8 +58,11 @@ public class MiningScheduler
 		{
 			Entry<UUID,MiningAgent> entry = list.get(i);
 			
-			if(entry.getValue().tickMiner())
+			MiningAgent a = entry.getValue();
+			
+			if(a.tickMiner())
 			{
+				a.dropEverything();
 				agents.remove(entry.getKey());
 			}
 		}
