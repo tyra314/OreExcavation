@@ -32,6 +32,9 @@ public class MiningAgent
 	
 	private boolean subtypes = true; // Ignore metadata
 	
+	private List<ItemStack> drops = new ArrayList<ItemStack>();
+	private int experience = 0;
+	
 	public MiningAgent(EntityPlayerMP player, BlockPos origin, Block block, int meta)
 	{
 		this.player = player;
@@ -93,6 +96,8 @@ public class MiningAgent
 			return true;
 		}
 		
+		EventHandler.captureAgent = this;
+		
 		for(int n = 0; scheduled.size() > 0; n++)
 		{
 			if(n >= toolProps.getSpeed() || mined.size() >= toolProps.getLimit())
@@ -106,9 +111,11 @@ public class MiningAgent
 			if(heldItem != origTool)
 			{
 				// Original tool has been swapped or broken
+				EventHandler.captureAgent = null;
 				return true;
 			} else if(!hasEnergy(player))
 			{
+				EventHandler.captureAgent = null;
 				return true;
 			}
 			
@@ -177,6 +184,8 @@ public class MiningAgent
 			}
 		}
 		
+		EventHandler.captureAgent = null;
+		
 		return scheduled.size() <= 0 || mined.size() >= toolProps.getLimit();
 	}
 	
@@ -199,6 +208,39 @@ public class MiningAgent
 	private boolean hasEnergy(EntityPlayerMP player)
 	{
 		return (toolProps.getExaustion() <= 0 || player.getFoodStats().getFoodLevel() > 0) && (toolProps.getExperience() <= 0 || XPHelper.getPlayerXP(player) >= toolProps.getExperience());
+	}
+	
+	public void dropEverything()
+	{
+		for(ItemStack stack : drops)
+		{
+			if(!this.player.inventory.addItemStackToInventory(stack))
+			{
+				this.player.dropPlayerItemWithRandomChoice(stack, false);
+			} else
+			{
+				this.player.worldObj.playSoundAtEntity(this.player, "random.pop", 0.2F, ((this.player.getRNG().nextFloat() - this.player.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+			}
+		}
+		
+		if(this.experience > 0)
+		{
+			this.player.addExperience(experience);
+			this.player.worldObj.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((this.player.getRNG().nextFloat() - this.player.getRNG().nextFloat()) * 0.7F + 1.8F));
+		}
+		
+		drops.clear();
+		this.experience = 0;
+	}
+	
+	public void addItemDrop(ItemStack stack)
+	{
+		this.drops.add(stack);
+	}
+	
+	public void addExperience(int value)
+	{
+		this.experience += value;
 	}
 	
 	private static Method m_createStack = null;

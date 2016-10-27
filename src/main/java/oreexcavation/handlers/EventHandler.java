@@ -2,6 +2,8 @@ package oreexcavation.handlers;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -9,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -19,6 +22,7 @@ import oreexcavation.network.PacketExcavation;
 import oreexcavation.utils.BlockPos;
 import oreexcavation.utils.ToolEffectiveCheck;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -26,6 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventHandler
 {
+	public static MiningAgent captureAgent;
 	
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
@@ -34,6 +39,35 @@ public class EventHandler
 		{
 			ConfigHandler.config.save();
 			ConfigHandler.initConfigs();
+		}
+	}
+	
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void onEntitySpawn(EntityJoinWorldEvent event)
+	{
+		if(event.world.isRemote)
+		{
+			return;
+		}
+		
+		if(captureAgent != null)
+		{
+			if(event.entity instanceof EntityItem)
+			{
+				EntityItem eItem = (EntityItem)event.entity;
+				ItemStack stack = eItem.getEntityItem();
+				
+				captureAgent.addItemDrop(stack);
+				
+				event.setCanceled(true);
+			} else if(event.entity instanceof EntityXPOrb)
+			{
+				EntityXPOrb orb = (EntityXPOrb)event.entity;
+				
+				captureAgent.addExperience(orb.getXpValue());
+				
+				event.setCanceled(true);
+			}
 		}
 	}
 	
@@ -91,6 +125,7 @@ public class EventHandler
 		}
 		
 		MiningScheduler.INSTANCE.tickAgents();
+		captureAgent = null;
 	}
 
 	public static boolean isExcavating = false;
