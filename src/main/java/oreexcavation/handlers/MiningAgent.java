@@ -96,8 +96,6 @@ public class MiningAgent
 			return true;
 		}
 		
-		EventHandler.captureAgent = this;
-		
 		for(int n = 0; scheduled.size() > 0; n++)
 		{
 			if(n >= toolProps.getSpeed() || mined.size() >= toolProps.getLimit())
@@ -111,11 +109,9 @@ public class MiningAgent
 			if(heldItem != origTool)
 			{
 				// Original tool has been swapped or broken
-				EventHandler.captureAgent = null;
 				return true;
 			} else if(!hasEnergy(player))
 			{
-				EventHandler.captureAgent = null;
 				return true;
 			}
 			
@@ -183,8 +179,6 @@ public class MiningAgent
 				mined.add(pos);
 			}
 		}
-		
-		EventHandler.captureAgent = null;
 		
 		return scheduled.size() <= 0 || mined.size() >= toolProps.getLimit();
 	}
