@@ -181,6 +181,7 @@ public class EventHandler
 		}
 		
 		MiningScheduler.INSTANCE.resetAll();
+		captureAgent = null;
 	}
 	
 	public boolean isBlockBlacklisted(Block block)

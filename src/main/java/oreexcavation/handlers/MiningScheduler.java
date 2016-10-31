@@ -60,7 +60,11 @@ public class MiningScheduler
 			
 			MiningAgent a = entry.getValue();
 			
-			if(a.tickMiner())
+			EventHandler.captureAgent = a;
+			boolean complete = a.tickMiner();
+			EventHandler.captureAgent = null;
+			
+			if(complete)
 			{
 				a.dropEverything();
 				agents.remove(entry.getKey());
