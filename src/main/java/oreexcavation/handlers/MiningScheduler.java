@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.UUID;
+import com.google.common.base.Stopwatch;
+import oreexcavation.core.ExcavationSettings;
 import oreexcavation.utils.BlockPos;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,9 +17,11 @@ public class MiningScheduler
 	public static final MiningScheduler INSTANCE = new MiningScheduler();
 	
 	private HashMap<UUID,MiningAgent> agents = new HashMap<UUID,MiningAgent>();
+	private Stopwatch timer;
 	
 	private MiningScheduler()
 	{
+		timer = Stopwatch.createStarted();
 	}
 	
 	public MiningAgent getActiveAgent(UUID uuid)
@@ -54,8 +59,17 @@ public class MiningScheduler
 	{
 		List<Entry<UUID,MiningAgent>> list = new ArrayList<Entry<UUID,MiningAgent>>(agents.entrySet());
 		
+		timer.reset();
+		timer.start();
+		
 		for(int i = list.size() - 1; i >= 0; i--)
 		{
+			if(ExcavationSettings.tpsGuard && timer.elapsed(TimeUnit.MILLISECONDS) > 40)
+			{
+				EventHandler.skipNext = true;
+				break;
+			}
+			
 			Entry<UUID,MiningAgent> entry = list.get(i);
 			
 			MiningAgent a = entry.getValue();
@@ -70,6 +84,8 @@ public class MiningScheduler
 				agents.remove(entry.getKey());
 			}
 		}
+		
+		timer.stop();
 	}
 	
 	public void resetAll()

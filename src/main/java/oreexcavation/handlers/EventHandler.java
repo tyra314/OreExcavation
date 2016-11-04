@@ -31,6 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EventHandler
 {
 	public static MiningAgent captureAgent;
+	public static boolean skipNext = false;
 	
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
@@ -121,6 +122,12 @@ public class EventHandler
 	{
 		if(event.phase != TickEvent.Phase.END || event.world.isRemote)
 		{
+			return;
+		}
+		
+		if(skipNext)
+		{
+			skipNext = false;
 			return;
 		}
 		
