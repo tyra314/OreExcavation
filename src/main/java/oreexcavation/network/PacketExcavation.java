@@ -2,6 +2,7 @@ package oreexcavation.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -51,17 +52,25 @@ public class PacketExcavation implements IMessage
 		@SuppressWarnings("deprecation")
 		public PacketExcavation onMessage(PacketExcavation message, MessageContext ctx)
 		{
-			EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 			
 			if(message.tags.getBoolean("cancel"))
 			{
-				MiningScheduler.INSTANCE.stopMining(player);
+				player.getServer().addScheduledTask(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						MiningScheduler.INSTANCE.stopMining(player);
+					}
+					
+				});
 				return null;
 			}
 			
-			int x = message.tags.getInteger("x");
-			int y = message.tags.getInteger("y");
-			int z = message.tags.getInteger("z");
+			final int x = message.tags.getInteger("x");
+			final int y = message.tags.getInteger("y");
+			final int z = message.tags.getInteger("z");
 			
 			Block block = null;
 			
@@ -74,14 +83,21 @@ public class PacketExcavation implements IMessage
 			}
 			
 			int meta = message.tags.getInteger("meta");
+			final IBlockState state = block.getStateFromMeta(meta);
 			
 			if(player == null || block == null)
 			{
 				return null;
 			}
 			
-			Block.getStateId(block.getDefaultState());
-			MiningScheduler.INSTANCE.startMining(player, new BlockPos(x, y, z), block.getStateFromMeta(meta));
+			player.getServer().addScheduledTask(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					MiningScheduler.INSTANCE.startMining(player, new BlockPos(x, y, z), state);
+				}
+			});
 			
 			return null;
 		}

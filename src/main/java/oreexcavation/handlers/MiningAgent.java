@@ -3,6 +3,7 @@ package oreexcavation.handlers;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,6 +20,7 @@ import oreexcavation.overrides.ToolOverrideHandler;
 import oreexcavation.utils.ToolEffectiveCheck;
 import oreexcavation.utils.XPHelper;
 import org.apache.logging.log4j.Level;
+import com.google.common.base.Stopwatch;
 
 public class MiningAgent
 {
@@ -39,8 +41,11 @@ public class MiningAgent
 	private List<ItemStack> drops = new ArrayList<ItemStack>();
 	private int experience = 0;
 	
+	private Stopwatch timer;
+	
 	public MiningAgent(EntityPlayerMP player, BlockPos origin, IBlockState state)
 	{
+		this.timer = Stopwatch.createUnstarted();
 		this.player = player;
 		this.origin = origin;
 		
@@ -100,9 +105,17 @@ public class MiningAgent
 			return true;
 		}
 		
+		timer.reset();
+		timer.start();
+		
 		for(int n = 0; scheduled.size() > 0; n++)
 		{
 			if(n >= toolProps.getSpeed() || mined.size() >= toolProps.getLimit())
+			{
+				break;
+			}
+			
+			if(ExcavationSettings.tpsGuard && timer.elapsed(TimeUnit.MILLISECONDS) > 40)
 			{
 				break;
 			}
@@ -113,9 +126,11 @@ public class MiningAgent
 			if(heldItem != origTool)
 			{
 				// Original tool has been swapped or broken
+				timer.stop();
 				return true;
 			} else if(!hasEnergy(player))
 			{
+				timer.stop();
 				return true;
 			}
 			
@@ -185,6 +200,8 @@ public class MiningAgent
 			}
 		}
 		
+		timer.stop();
+		
 		return scheduled.size() <= 0 || mined.size() >= toolProps.getLimit();
 	}
 	
@@ -211,6 +228,12 @@ public class MiningAgent
 	
 	public void dropEverything()
 	{
+		// Temporarily halt any ongoing captures
+		MiningAgent ca = EventHandler.captureAgent;
+		EventHandler.captureAgent = null;
+		
+		boolean playSnd = false;
+		
 		for(ItemStack stack : drops)
 		{
 			if(!this.player.inventory.addItemStackToInventory(stack))
@@ -218,8 +241,13 @@ public class MiningAgent
 				this.player.dropItem(stack, true, false);
 			} else
 			{
-                this.player.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((this.player.getRNG().nextFloat() - this.player.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+				playSnd = true;
 			}
+		}
+		
+		if(playSnd)
+		{
+            this.player.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((this.player.getRNG().nextFloat() - this.player.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
 		}
 		
 		if(this.experience > 0)
@@ -230,6 +258,8 @@ public class MiningAgent
 		
 		drops.clear();
 		this.experience = 0;
+		
+		EventHandler.captureAgent = ca;
 	}
 	
 	public void addItemDrop(ItemStack stack)
