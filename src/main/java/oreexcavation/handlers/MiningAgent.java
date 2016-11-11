@@ -12,6 +12,7 @@ import oreexcavation.core.ExcavationSettings;
 import oreexcavation.core.OreExcavation;
 import oreexcavation.overrides.ToolOverride;
 import oreexcavation.overrides.ToolOverrideHandler;
+import oreexcavation.utils.BigItemStack;
 import oreexcavation.utils.BlockPos;
 import oreexcavation.utils.ToolEffectiveCheck;
 import oreexcavation.utils.XPHelper;
@@ -34,7 +35,7 @@ public class MiningAgent
 	
 	private boolean subtypes = true; // Ignore metadata
 	
-	private List<ItemStack> drops = new ArrayList<ItemStack>();
+	private List<BigItemStack> drops = new ArrayList<BigItemStack>();
 	private int experience = 0;
 	
 	private Stopwatch timer;
@@ -229,14 +230,17 @@ public class MiningAgent
 		
 		boolean playSnd = false;
 		
-		for(ItemStack stack : drops)
+		for(BigItemStack bigStack : drops)
 		{
-			if(!this.player.inventory.addItemStackToInventory(stack))
+			for(ItemStack stack : bigStack.getCombinedStacks())
 			{
-				this.player.dropPlayerItemWithRandomChoice(stack, false);
-			} else
-			{
-				playSnd = true;
+				if(!this.player.inventory.addItemStackToInventory(stack))
+				{
+					this.player.dropPlayerItemWithRandomChoice(stack, false);
+				} else
+				{
+					playSnd = true;
+				}
 			}
 		}
 		
@@ -259,7 +263,16 @@ public class MiningAgent
 	
 	public void addItemDrop(ItemStack stack)
 	{
-		this.drops.add(stack);
+		for(BigItemStack bigStack : drops)
+		{
+			if(bigStack.getBaseStack().equals(stack))
+			{
+				bigStack.stackSize += stack.stackSize;
+				return;
+			}
+		}
+		
+		this.drops.add(new BigItemStack(stack));
 	}
 	
 	public void addExperience(int value)

@@ -43,10 +43,10 @@ public class EventHandler
 		}
 	}
 	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	@SubscribeEvent(priority=EventPriority.LOWEST)
 	public void onEntitySpawn(EntityJoinWorldEvent event)
 	{
-		if(event.world.isRemote)
+		if(event.world.isRemote || event.entity.isDead || event.isCanceled())
 		{
 			return;
 		}
@@ -118,9 +118,9 @@ public class EventHandler
 	}
 	
 	@SubscribeEvent
-	public void onTick(TickEvent.WorldTickEvent event)
+	public void onTick(TickEvent.ServerTickEvent event)
 	{
-		if(event.phase != TickEvent.Phase.END || event.world.isRemote)
+		if(event.phase != TickEvent.Phase.END)
 		{
 			return;
 		}
