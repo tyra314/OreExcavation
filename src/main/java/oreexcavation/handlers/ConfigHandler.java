@@ -33,7 +33,7 @@ public class ConfigHandler
 		ExcavationSettings.openHand = config.getBoolean("Open Hand", Configuration.CATEGORY_GENERAL, true, "Allow excavation with an open hand");
 		ExcavationSettings.mustHold = config.getBoolean("Must Hold", Configuration.CATEGORY_GENERAL, true, "Allows players to cancel excavation by releasing the keys");
 		ExcavationSettings.invertTBlacklist = config.getBoolean("Invert Tool Blacklist", Configuration.CATEGORY_GENERAL, false, "Inverts the tool blacklist to function as a whitelist");
-		ExcavationSettings.invertBBlacklist = config.getBoolean("Invert Block Blacklist", Configuration.CATEGORY_GENERAL, false, "Inverts the tool blacklist to function as a whitelist");
+		ExcavationSettings.invertBBlacklist = config.getBoolean("Invert Block Blacklist", Configuration.CATEGORY_GENERAL, false, "Inverts the block blacklist to function as a whitelist");
 		ExcavationSettings.ignoreTools = config.getBoolean("Ignore Tool", Configuration.CATEGORY_GENERAL, false, "Ignores whether or not the held tool is valid");
 		ExcavationSettings.altTools = config.getBoolean("Alt Tools", Configuration.CATEGORY_GENERAL, false, "Use alternate check for tool validity (e.g. swords on webs)");
 		ExcavationSettings.toolClass = config.getBoolean("Only Standard Types", Configuration.CATEGORY_GENERAL, false, "Limit excavation to standard tool types (Picks, Shoves, Axes & Shears)");
