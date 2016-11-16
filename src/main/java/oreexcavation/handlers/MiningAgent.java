@@ -257,7 +257,7 @@ public class MiningAgent
 		if(this.experience > 0)
 		{
 			this.player.addExperience(experience);
-            this.player.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_TOUCH, SoundCategory.PLAYERS, 0.1F, 0.5F * ((this.player.getRNG().nextFloat() - this.player.getRNG().nextFloat()) * 0.7F + 1.8F));
+            this.player.worldObj.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((this.player.getRNG().nextFloat() - this.player.getRNG().nextFloat()) * 0.7F + 1.8F));
 		}
 		
 		drops.clear();
@@ -272,7 +272,7 @@ public class MiningAgent
 		{
 			if(bigStack.getBaseStack().equals(stack))
 			{
-				bigStack.stackSize += stack.stackSize;
+				bigStack.stackSize += stack.func_190916_E();
 				return;
 			}
 		}
